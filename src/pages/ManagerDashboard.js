@@ -24,6 +24,10 @@ async function loadDashboard() {
 
   const unreadCount = await getUnreadCount(user.user.id);
   const bellHtml    = await renderNotificationBell(user.user.id);
+
+  // Guard: user may have navigated away while we were loading
+  if (currentView !== 'dashboard') return;
+
   const app         = document.getElementById('app');
 
   app.innerHTML = `
@@ -50,7 +54,7 @@ async function loadDashboard() {
 
   window.handleNavClick = async (page) => {
     currentView = page;
-    if      (page === 'dashboard')     loadDashboard();
+    if      (page === 'dashboard')     await loadDashboard();
     else if (page === 'requests')      renderRequestsPage();
     else if (page === 'suppliers')     renderSuppliersPage();
     else if (page === 'notifications') renderNotificationsPage();
@@ -88,6 +92,7 @@ async function loadKPIs(user) {
     }).length || 0;
 
     const contentDiv = document.getElementById('dashboard-content');
+    if (!contentDiv) return;
     contentDiv.innerHTML = `
       <div class="kpi-cards">
         <div class="kpi-card">
@@ -165,6 +170,7 @@ async function loadRecentRequests(user) {
       .limit(5);
 
     const section = document.getElementById('recent-requests-section');
+    if (!section) return;
 
     if (!requests || requests.length === 0) {
       section.innerHTML = `

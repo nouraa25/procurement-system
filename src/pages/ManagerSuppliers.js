@@ -253,6 +253,7 @@ async function loadSuppliers() {
       .order('rating', { ascending: false });
 
     const content = document.getElementById('suppliers-content');
+    if (!content) return;
 
     if (!suppliers || suppliers.length === 0) {
       content.innerHTML = `
@@ -301,6 +302,18 @@ async function loadSuppliers() {
 
   } catch (error) {
     console.error('Error loading suppliers:', error);
+    const content = document.getElementById('suppliers-content');
+    if (content) {
+      content.innerHTML = `
+        <div class="enterprise-empty-state">
+          <i class="bi bi-exclamation-circle"></i>
+          <h5>${L({ ar: 'خطأ في تحميل الموردين', en: 'Error loading suppliers' })}</h5>
+          <p>${L({ ar: 'يرجى المحاولة مرة أخرى', en: 'Please try again' })}</p>
+          <button class="btn btn-primary" onclick="window.handleNavClick('suppliers')">
+            <i class="bi bi-arrow-clockwise"></i> ${L({ ar: 'إعادة التحميل', en: 'Retry' })}
+          </button>
+        </div>`;
+    }
   }
 }
 

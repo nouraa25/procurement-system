@@ -730,13 +730,14 @@ async function loadRequests() {
       .order('created_at', { ascending: false });
 
     const content = document.getElementById('requests-content');
+    if (!content) return;
 
     if (!requests || requests.length === 0) {
       content.innerHTML = `
         <div class="card">
           <div class="empty-state">
             <i class="bi bi-inbox"></i>
-            <p>${t('common.loading')}</p>
+            <p>${t('requests.no_requests')}</p>
           </div>
         </div>
       `;
@@ -780,6 +781,16 @@ async function loadRequests() {
     `;
   } catch (error) {
     console.error('Error loading requests:', error);
+    const content = document.getElementById('requests-content');
+    if (content) {
+      content.innerHTML = `
+        <div class="card">
+          <div class="empty-state">
+            <i class="bi bi-exclamation-circle"></i>
+            <p>${t('common.error')}</p>
+          </div>
+        </div>`;
+    }
   }
 }
 
